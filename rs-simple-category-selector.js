@@ -15,7 +15,7 @@ jQuery(document).ready( function($){
 		}
 		
 		//Add graphical checkbox to the right of all categories that were previously selected and make the main category the proper graphic
-		$('ul.categorychecklist li :checked').each( function(){
+		$('#taxonomy-category ul.categorychecklist li :checked').each( function(){
 			var checkbox_category_id = $(this).val();
 			var category_list_item = $(this).closest('li');
 			var category_selector = $( '<div class="category_selector" />');
@@ -31,7 +31,7 @@ jQuery(document).ready( function($){
 	});
 	
 	//Handle clicking on the checkbox or label
-	$('ul.categorychecklist li').on('click', 'input', function(e) {
+	$('#taxonomy-category ul.categorychecklist li').on('click', 'input', function(e) {
 		
 		var category_list_item = $(this).closest('li');
 		
@@ -53,7 +53,7 @@ jQuery(document).ready( function($){
 	});
 	
 	//Handle turning the category into the main category
-	$('ul.categorychecklist li').on('click', '.category_selector.off', function(e){
+	$('#taxonomy-category ul.categorychecklist li').on('click', '.category_selector.off', function(e){
 		
 		//Remove the on state from any other category_selector
 		$('.category_selector').each( function(){
@@ -68,7 +68,7 @@ jQuery(document).ready( function($){
 	});
 	
 	//Handle shutting off the main category
-	$('ul.categorychecklist li').on('click', 'div.category_selector.on', function(e){
+	$('#taxonomy-category ul.categorychecklist li').on('click', 'div.category_selector.on', function(e){
 		$(this).removeClass('on').addClass('off');
 		category_hidden_input.val('');
 	});
