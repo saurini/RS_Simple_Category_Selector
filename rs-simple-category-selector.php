@@ -45,6 +45,7 @@ class RS_Simple_Category_Selector {
 		add_action( 'admin_print_styles-post.php', array( $this, 'print_styles' ) );
 		add_action( 'admin_print_styles-post-new.php', array( $this, 'print_styles' ) );
 		add_action( 'wp_ajax_get_main_category_meta', array( $this, 'get_main_category_meta' ) );
+		add_action( 'admin_footer', array( $this, 'add_nonce' ) ); 
 	}
 
 	function print_scripts() {
@@ -56,7 +57,10 @@ class RS_Simple_Category_Selector {
 	}
 
 	function save_post( $post_id, $post ) {
-
+		
+		if ( ! current_user_can( 'edit_post', $post_id ) || ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) || empty( $_POST['tc_category_selected_nonce'] ) || ! wp_verify_nonce( $_POST['tc_category_selected_nonce'], 'tc_category_selected_nonce' ) )
+			return;
+		
 		$this->category_selected = (int) $_POST['rs_category_selected'];
 		if ( $post->post_type != 'post' || ! get_the_category_by_ID( $this->category_selected ) )
 			return;
@@ -66,13 +70,13 @@ class RS_Simple_Category_Selector {
 
 	function get_main_category_meta() {
 
-		if ( empty( $_POST['postid'] ) )
-			die( 'Error: No post has been selected' );
+		if ( empty( $_GET['postid'] ) )
+			die( 'No post has been selected' );
 
-		$post_id = $_POST['postid'];
+		$post_id = $_GET['postid'];
 
-		if ( ! is_admin() )
-			die( 'Error: this can only be done in the admin' );
+		if ( ! is_admin() && current_user_can( 'edit_post', $post_id ) )
+			die( 'Not in the admin' );
 
 		$meta_data = get_post_meta( $post_id, 'rs_category_selected', true );
 
@@ -80,6 +84,10 @@ class RS_Simple_Category_Selector {
 			die( $meta_data );
 
 		die( 'No rs_category_selected was found' );
+	}
+	
+	function add_nonce() { 
+		wp_nonce_field( 'rs_category_selected_nonce', 'rs_category_selected_nonce', false ); // this outputs <input type="hidden" ... /> 
 	}
 
 }

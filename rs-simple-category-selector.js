@@ -8,7 +8,7 @@ jQuery(document).ready( function($){
 	post_form.append(category_hidden_input);
 	
 	//See if rs_category_selected was stored in post meta; store it for later
-	$.post( ajaxurl, { action: 'get_main_category_meta', postid: post_id }, function(response){
+	$.get( ajaxurl, { action: 'get_main_category_meta', postid: post_id }, function(response){
 		if ( response != 0){
 			main_category = response.trim();
 			category_hidden_input.val(main_category);	
