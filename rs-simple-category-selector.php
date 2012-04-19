@@ -45,7 +45,7 @@ class RS_Simple_Category_Selector {
 		add_action( 'admin_print_styles-post.php', array( $this, 'print_styles' ) );
 		add_action( 'admin_print_styles-post-new.php', array( $this, 'print_styles' ) );
 		add_action( 'wp_ajax_get_main_category_meta', array( $this, 'get_main_category_meta' ) );
-		add_action( 'admin_footer', array( $this, 'add_nonce' ) ); 
+		add_action( 'edit_form_advanced', array( $this, 'add_nonce' ) ); 
 	}
 
 	function print_scripts() {
