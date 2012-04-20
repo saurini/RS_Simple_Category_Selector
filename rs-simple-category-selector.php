@@ -4,7 +4,7 @@ Plugin Name: Simple Category Selector
 Plugin URI: https://github.com/saurini/Wordpress_Category-Selector
 Description: Gives the ability to set a main category on the post add/edit pages in admin. Stores that info in post meta.
 Author: Rob Saurini
-Version: 0.2
+Version: 0.2.1
 Author URI: http://saurini.com
 
 GNU General Public License, Free Software Foundation <http://creativecommons.org/licenses/GPL/2.0/>
@@ -57,8 +57,8 @@ class RS_Simple_Category_Selector {
 	}
 
 	function save_post( $post_id, $post ) {
-		
-		if ( ! current_user_can( 'edit_post', $post_id ) || ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) || empty( $_POST['tc_category_selected_nonce'] ) || ! wp_verify_nonce( $_POST['tc_category_selected_nonce'], 'tc_category_selected_nonce' ) )
+
+		if ( ! current_user_can( 'edit_post', $post_id ) || ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) || empty( $_POST['rs_category_selected_nonce'] ) || ! wp_verify_nonce( $_POST['rs_category_selected_nonce'], 'rs_category_selected_nonce' ) )
 			return;
 		
 		$this->category_selected = (int) $_POST['rs_category_selected'];
@@ -73,7 +73,7 @@ class RS_Simple_Category_Selector {
 		if ( empty( $_GET['postid'] ) )
 			die( 'No post has been selected' );
 
-		$post_id = $_GET['postid'];
+		$post_id = (int) $_GET['postid'];
 
 		if ( ! is_admin() && current_user_can( 'edit_post', $post_id ) )
 			die( 'Not in the admin' );
@@ -83,13 +83,33 @@ class RS_Simple_Category_Selector {
 		if ( ! empty( $meta_data ) && get_the_category_by_ID( $meta_data ) )
 			die( $meta_data );
 
-		die( 'No rs_category_selected was found' );
+		die( '0' );
 	}
 	
 	function add_nonce() { 
-		wp_nonce_field( 'rs_category_selected_nonce', 'rs_category_selected_nonce', false ); // this outputs <input type="hidden" ... /> 
+		wp_nonce_field( 'rs_category_selected_nonce', 'rs_category_selected_nonce', false ); 
 	}
 
 }
 
 $category_selector = new RS_Simple_Category_Selector;
+
+include_once( 'rs-simple-category-selector-shortcodes.php' );
+
+function rs_get_main_category_id( $rs_post_id = ''){
+
+	global $post;
+	
+	if ( empty( $rs_post_id ) ){
+		if ( is_single() )
+			$rs_post_id = $post->ID;
+		else
+			return false;
+	}
+	
+	if ( $cat_id = get_post_meta( $rs_post_id, 'rs_category_selected', true) )	
+		return $cat_id;
+	
+	return false;
+
+}
