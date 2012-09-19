@@ -32,7 +32,7 @@ if ( ! defined( 'RSSCS_PLUGIN_NAME' ) )
 	define( 'RSSCS_PLUGIN_NAME', trim( dirname( RSSCS_PLUGIN_BASENAME ), '/' ) );
 	
 if ( ! defined( 'RSSCS_PLUGIN_URL' ) )
-	define( 'RSSCS_PLUGIN_URL', WP_PLUGIN_URL . '/' . RSSCS_PLUGIN_NAME );
+	define( 'RSSCS_PLUGIN_URL', plugins_url() . '/' . RSSCS_PLUGIN_NAME );
 
 class RS_Simple_Category_Selector {
 
